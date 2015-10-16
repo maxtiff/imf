@@ -1,0 +1,7 @@
+/problems
+/logs
+/data
+/output
+*.csv
+.R*
+.R*.*
