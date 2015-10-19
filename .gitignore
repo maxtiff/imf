@@ -5,3 +5,4 @@
 *.csv
 .R*
 .R*.*
+.Rproj.user

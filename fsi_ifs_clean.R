@@ -8,7 +8,6 @@ library(data.table)
 library(reshape2)
 library(plyr)
 library(stringr)
-library(lubridate)
 library(hash)
 
 ## Source all required scripts.
@@ -32,34 +31,23 @@ fsi              <- cleaner(fsi_raw, fsi_countries, fsi_indicators)
 
 ifs              <- cleaner(ifs_raw, ifs_countries, ifs_indicators)
 
-##########################################################################################
+################################################################################
 ### FSI
 
-## Extract series qualitative data columns; Extract observation columns to break into
-## frequencies, recombine
+## Extract series qualitative data columns; Extract observation columns to break
+## into frequencies, recombine
 fsi_meta         <- fsi[,(1:5)]
 fsi_obs          <- fsi[,(6:ncol(fsi))]
 
-## Drop leading X from column names
-# fsi_obs_list     <- lapply(colnames(fsi_obs[,grepl('^X',colnames(fsi_obs))]),
-#                            function(x) substring(x,2))
-
-# test <- lapply(fsi_obs_list, function (x) if(grepl('\\d{4}M\\d{1,2}',x)) {
-#                                               if (nchar(x) == 6) sub('M','.0',x)
-#                                               else if (nchar(x) == 7) sub ('M', '.', x)}
-#                                               else {x})
-
-# fsi_obs          <- setnames(fsi_obs, as.character(fsi_obs_list))
-
-
 ## Subset data frames based on frequency
 for (i in 1:length(fsi_dataframes)) {
-  assign(fsi_dataframes[i],frequenter(frequency = freqs[i],metadata_frame = fsi_meta,
+  assign(fsi_dataframes[i],frequenter(frequency = freqs[i],
+                                      metadata_frame = fsi_meta,
                                       observations_frame = fsi_obs))
 }
 
-## Subset data by country and order by indicator for each frequency, melt resutlant data-
-## frame to tall/skinny
+## Subset data by country and order by indicator for each frequency, melt
+## resutlant data frame to tall/skinny format
 for (i in 1:length(freqs)) {
   for (j in 1:length(fsi_fred_nat)) {
 
@@ -89,12 +77,14 @@ for (i in 1:length(freqs)) {
         seasonality <- 'N'
       }
 
-      indicator  <- paste(keys(fsi_fred_ind)[k],country_name,unit,seasonality,sep="")
+      indicator  <- paste(keys(fsi_fred_ind)[k],country_name,unit,seasonality,
+                          sep="")
 
       # Working frame is a country subset
       frame      <- get(country_name)
 
-      assign(indicator,frame[frame$Indicator.Code == fsi_fred_ind[[fred_ind[k]]],])
+      assign(indicator,frame[frame$Indicator.Code == fsi_fred_ind[[fred_ind[k]]],
+                             ])
 
       # Working frame is a indicator subset
       frame      <- get(indicator)
@@ -102,11 +92,11 @@ for (i in 1:length(freqs)) {
       if(is.data.frame(frame) & nrow(frame)>0) {
         assign(indicator,
                suppressWarnings(melt(frame, id.vars=c(colnames(frame[,(1:5)])),
-                               na.rm=T,variable.name = 'date',value.name = indicator)))
+                               na.rm=T,variable.name = 'date',
+                               value.name = indicator)))
 
-        # get(indicator) <- sapply(get(indicator), function(x) if (str_length(x) == 6) sub('M','.0',x) else sub ('M', '.', x))
-
-        write.table(get(indicator)[,6:7],file=paste('output',indicator,sep='\\'),quote=F,row.names=F)
+        write.table(get(indicator)[,6:7],file=paste('output',indicator,sep='\\'),
+                    quote=F,row.names=F)
 
       } else {
         # remove(get(indicator))
