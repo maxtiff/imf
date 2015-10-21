@@ -49,33 +49,32 @@ for (i in 1:length(freqs)) {
 
     assign(country_name,frame[frame$Country.Name == ifs_countries[j],])
 
-    for(k in 1:length(fred_ifs_ind)) {
-      if(grepl('PT',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+    for(k in 1:length(ifs_fred_ind)) {
+      if(grepl('PT',keys(ifs_fred_ind)[k])) {
         unit <- '163'
-      } else if(grepl('PA',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      } else if(grepl('PA',keys(ifs_fred_ind)[k])) {
         unit <- '193'
-      } else if(grepl('XDC',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      } else if(grepl('XDC',keys(ifs_fred_ind)[k])) {
         unit <- '189'
-      } else if(grepl('XDR',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      } else if(grepl('XDR',keys(ifs_fred_ind)[k])) {
         unit <- '194'
-      } else if(grepl('USD',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      } else if(grepl('USD',keys(ifs_fred_ind)[k])) {
         unit <- '052'
       }
 
-      if(grepl('_SA_',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      if(grepl('_SA_',keys(ifs_fred_ind)[k])) {
         seasonality <- 'S'
-      } else if (!grepl('_S_',fred_ifs_ind[[ifs_fred_ind[k]]])) {
+      } else if (!grepl('_S_',keys(ifs_fred_ind)[k])) {
         seasonality <- 'N'
       }
 
-      indicator  <- paste(keys(fred_ifs_ind)[k],country_name,unit,seasonality,
-                          sep="")
+      indicator  <- paste(values(ifs_fred_ind,USE.NAMES=FALSE)[k],country_name,unit,
+                          seasonality,sep="")
 
       # Working frame is a country subset
       frame      <- get(country_name)
 
-      assign(indicator,frame[frame$Indicator.Code == fred_ifs_ind[[ifs_fred_ind[k]]],
-                             ])
+      assign(indicator,frame[frame$Indicator.Code == keys(ifs_fred_ind)[k],])
 
       # Working frame is a indicator subset
       frame      <- get(indicator)
@@ -94,14 +93,4 @@ for (i in 1:length(freqs)) {
       }
     }
   }
-}
-
-##########################################################################################
-## Debugging purposes only ##
-for (i in 1:length(ifs_dataframes)) {
-  assign(ifs_dataframes[i],frequenter(frequency = freqs[i],metadata_frame = ifs_meta,
-                                      observations_frame = ifs_obs))
-
-  assign(ifs_dataframes[i], melt.data.frame(eval(parse(text = ifs_dataframes[i])),
-                                            id.vars=c(colnames(eval(parse(text = ifs_dataframes[i]))[,(1:5)])),na.rm=T))
 }
