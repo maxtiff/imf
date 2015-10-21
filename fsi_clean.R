@@ -74,7 +74,7 @@ for (i in 1:length(freqs)) {
       # Working frame is a country subset
       frame      <- get(country_name)
 
-      assign(indicator,frame[frame$Indicator.Code == fsi_fred_ind[[fred_ind[k]]],
+      assign(indicator,frame[frame$Indicator.Code == fsi_fred_ind[[fred_fsi_ind[k]]],
                              ])
 
       # Working frame is a indicator subset
@@ -94,25 +94,4 @@ for (i in 1:length(freqs)) {
       }
     }
   }
-}
-
-##########################################################################################
-### IFS
-
-## Extract series qualitative data columns; Extract observation columns to break into frequnecies, recombine
-ifs_meta <- ifs[,(1:5)]
-ifs_obs <- ifs[,(6:ncol(ifs))]
-
-## Drop leading X from column names
-ifs_obs_list     <- lapply(colnames(ifs_obs[,grepl('^X',colnames(ifs_obs))]),
-                           function(x) substring(x,2))
-
-ifs_obs          <- setnames(ifs_obs, as.character(ifs_obs_list))
-
-for (i in 1:length(ifs_dataframes)) {
-  assign(ifs_dataframes[i],frequenter(frequency = freqs[i],metadata_frame = ifs_meta,
-                                      observations_frame = ifs_obs))
-
-  assign(ifs_dataframes[i], melt.data.frame(eval(parse(text = ifs_dataframes[i])),
-                                            id.vars=c(colnames(eval(parse(text = ifs_dataframes[i]))[,(1:5)])),na.rm=T))
 }
