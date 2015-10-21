@@ -61,19 +61,19 @@ for (i in 1:length(freqs)) {
     for(k in 1:length(fsi_fred_ind)) {
       if(grepl('PT',fsi_fred_ind[[fred_ind[k]]])) {
         unit <- '163'
-      } else if(grepl('PA',fsi_fred_ind[[fred_ind[k]]])) {
+      } else if(grepl('PA',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         unit <- '193'
-      } else if(grepl('XDC',fsi_fred_ind[[fred_ind[k]]])) {
+      } else if(grepl('XDC',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         unit <- '189'
-      } else if(grepl('XDR',fsi_fred_ind[[fred_ind[k]]])) {
+      } else if(grepl('XDR',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         unit <- '194'
-      } else if(grepl('USD',fsi_fred_ind[[fred_ind[k]]])) {
+      } else if(grepl('USD',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         unit <- '052'
       }
 
-      if(grepl('_SA_',fsi_fred_ind[[fred_ind[k]]])) {
+      if(grepl('_SA_',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         seasonality <- 'S'
-      } else if (!grepl('_S_',fsi_fred_ind[[fred_ind[k]]])) {
+      } else if (!grepl('_S_',fsi_fred_ind[[fred_fsi_ind[k]]])) {
         seasonality <- 'N'
       }
 
