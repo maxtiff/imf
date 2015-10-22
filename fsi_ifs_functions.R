@@ -76,7 +76,8 @@ frequency_match <- function(frequency) {
 #
 #   Inputs:  Frequency of Q, M, or A
 #
-#   Returns: A regular expression used to check for frequency and subset dataframe.
+#   Returns: A regular expression character pattern used to check for frequency and subset
+#            the working dataframe.
 
   frequency <- tolower(frequency)
 
@@ -93,8 +94,12 @@ frequency_match <- function(frequency) {
   return(freq_match)
 }
 
-unit_convert <- function(indicator) {
-
+unit_assigner <- function(indicator) {
+#  Determines a unit for a FRED series id from a IMF indicator string.
+#
+#  Inputs:  String derived from hash key-value combination in corpus file.
+#
+#  Returns: A string of numbers to identify the units in a FRED series id.
 
   if(grepl('PT',indicator)) {
     unit <- '163'
@@ -106,9 +111,25 @@ unit_convert <- function(indicator) {
     unit <- '194'
   } else if(grepl('USD',indicator)) {
     unit <- '052'
+  } else if(grepl('EUR',indicator)) {
+    unit <- '196'
   } else {
     stop('Unit cannot be determined from function input.')
   }
+
+  return(unit)
+}
+
+season_assigner <- function(indicator) {
+  if(grepl('_SA_',indicator)) {
+    seasonality <- 'S'
+  } else if (!grepl('_SA_',indicator)) {
+    seasonality <- 'N'
+  } else {
+    stop('Seasonality cannot be determined from function input.')
+  }
+
+  return(seasonality)
 }
 
 
