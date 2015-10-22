@@ -1,7 +1,7 @@
 cleaner     <- function(data, countries, indicators, text) {
 #   Cleans a dataframe of extraneous rows, blank cells, and unused countries and indicators.
 #
-#   Inputs:  A raw dataframe, a list of countires, a list of indicators
+#   Inputs:  A raw dataframe, a list of countries, a list of indicators
 #
 #   Returns: A cleaned dataframe
 

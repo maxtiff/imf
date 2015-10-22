@@ -39,8 +39,7 @@ fsi_fred_ind   <- hash(c(FSCR_PT="CRELTL",
                          FSREPRR_PC_CP_A_PT="RESREP",
                          FSRR_PT="RRELTL",
                          FSTD_PT="TOTDTE",
-                         FSKRTC_PT="RT1CRA"))
-
+                         RFSKRTC_PT="RT1CRA"))
 
 # ifs_indicators <- c('FMB_XDC',
 #                     'FMB_USD',
@@ -163,9 +162,9 @@ ifs_fred_ind  <- hash(c(FID_PA="INTDSR",
 #                     'VALIMP',
 #                     'VALEXP')
 
-# fsi_countries  <- c('Australia','Brazil','Canada','France','Germany','Italy',
-#                     'Korea, Republic of','Mexico','Poland','Spain','United Kingdom',
-#                     'United States','South Africa')
+fsi_countries  <- c('Australia','Brazil','Canada','France','Germany','Italy',
+                    'Korea, Republic of','Mexico','Poland','Spain','United Kingdom',
+                    'United States','South Africa')
 
 fsi_fred_nat   <- hash(c(AU='Australia',
                          BR='Brazil',
@@ -181,11 +180,11 @@ fsi_fred_nat   <- hash(c(AU='Australia',
                          US='United States',
                          ZA='South Africa'))
 
-# ifs_countries  <- c('Argentina','Australia','Brazil','Canada','China, P.R.: Mainland',
-#                     'Germany','Spain','Euro Area','France','Indonesia','India',
-#                     'Iran, Islamic Republic of','Italy','Japan','Korea, Republic of',
-#                     'Mexico','Poland','Russian Federation','Saudi Arabia','Turkey',
-#                     'Taiwan Province of China','United Kingdom','United States','South Africa')
+ifs_countries  <- c('Argentina','Australia','Brazil','Canada','China, P.R.: Mainland',
+                    'Germany','Spain','Euro Area','France','Indonesia','India',
+                    'Iran, Islamic Republic of','Italy','Japan','Korea, Republic of',
+                    'Mexico','Poland','Russian Federation','Saudi Arabia','Turkey',
+                    'Taiwan Province of China','United Kingdom','United States','South Africa')
 
 ifs_fred_nat   <- hash(c(AR='Argentina',
                          AU='Australia',
