@@ -6,34 +6,26 @@ cleaner     <- function(data, countries, indicators, text) {
 #   Returns: A cleaned dataframe
 
   data_name   <- deparse(substitute(data))
-
   ## Comparability text
   break_text  <- text
-
   ## Subset by country
   data        <- data[data$Country.Name %in% countries,]
-    ## Subset by indicator
+  ## Subset by indicator
   data        <- data[data$Indicator.Code %in% indicators,]
-
   ## Convert to data.table
   data        <- as.data.table(data)
-
   if (grepl('^fsi',data_name)) {
     ## Remove columns without data
     data      <- data[,(6:21):=NULL]
-
   } else if (grepl('^ifs', data_name)) {
     ## Remove base year column
     date      <- data[,Base.Year:=NULL]
-
   }
   ## Revert to data.frame
   data        <- as.data.frame(data)
 
   ## Remove break text
   data        <- as.data.frame(sapply(data,function(x) gsub(break_text,NA,x)))
-
-
   return(data)
 }
 
@@ -48,11 +40,8 @@ frequenter  <- function(frequency,metadata_frame,observations_frame) {
   #            available in a certain frequency, it will not be in the dataframe
 
   frequency    <- frequency_match(frequency)
-
   frame        <- observations_frame[,grepl(frequency,colnames(observations_frame))]
-
   frame_l      <- lapply(colnames(frame[,grepl('^X',colnames(frame))]),function(x) substring(x,2))
-
   frame_l      <- lapply(frame_l, function (x) if(grepl('\\d{4}M\\d{1,2}',x)) {
                                                  if (nchar(x) == 6) sub('M','.0',x)
                                                  else if (nchar(x) == 7) sub ('M', '.', x)}
@@ -61,11 +50,8 @@ frequenter  <- function(frequency,metadata_frame,observations_frame) {
                                                else {x})
 
   frame        <- setnames(frame,as.character(frame_l))
-
   frame        <- cbind.data.frame(metadata_frame,frame)
-
   frame        <- frame[apply(frame[,(6:ncol(frame))],1,function(x)any(!is.na(x))),]
-
   return(frame)
 
 }
@@ -90,7 +76,6 @@ frequency_match <- function(frequency) {
   } else {
     stop('Frequency can be one of monthly, quarterly or annually; denoted by M, Q, or A, respectively ')
   }
-
   return(freq_match)
 }
 
@@ -116,11 +101,15 @@ unit_assigner <- function(indicator) {
   } else {
     stop('Unit cannot be determined from function input.')
   }
-
   return(unit)
 }
 
 season_assigner <- function(indicator) {
+#  Derives if data series is seasonally adjusted from IMF indicator string.
+#
+#  Inputs:  String derived from hash-key value combination in corpus file.
+#
+#  Return: Either a S or an N character to identify seasonality in a FRED series id.
   if(grepl('_SA_',indicator)) {
     seasonality <- 'S'
   } else if (!grepl('_SA_',indicator)) {
@@ -128,7 +117,6 @@ season_assigner <- function(indicator) {
   } else {
     stop('Seasonality cannot be determined from function input.')
   }
-
   return(seasonality)
 }
 
