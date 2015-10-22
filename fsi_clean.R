@@ -9,7 +9,7 @@ library(reshape2)
 library(hash)
 
 ## Source all required scripts.
-required_scripts <- c('fsi_ifs_functions.R','corpus.R')
+required_scripts   <- c('fsi_ifs_functions.R','corpus.R')
 sapply(required_scripts, source, .GlobalEnv)
 
 ## Source data files

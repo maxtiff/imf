@@ -15,7 +15,7 @@ sapply(required_scripts, source, .GlobalEnv)
 ## Source data files
 ifs_raw            <- read.csv("data/ifs.csv", header = T,na.string=c("NA",""," "),check.names = T)
 
-## Assign names for ifs and ifs data frames; annual, monthly, and quarterly
+## Assign names for data frames; annual, monthly, and quarterly
 ifs_dataframes     <- c('ifs_annual','ifs_monthly','ifs_quarterly')
 freqs              <- c('a','m','q')
 ifs                <- cleaner(ifs_raw, values(ifs_fred_nat, USE.NAMES=F), keys(ifs_fred_ind), break_text)

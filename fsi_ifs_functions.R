@@ -4,6 +4,7 @@ cleaner     <- function(data, countries, indicators, text) {
 #   Inputs:  A raw dataframe, a list of countries, a list of indicators
 #
 #   Returns: A cleaned dataframe
+  print(countries)
 
   data_name   <- deparse(substitute(data))
   ## Comparability text
