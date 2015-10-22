@@ -20,9 +20,7 @@ ifs_raw          <- read.csv("data/ifs.csv", header = T,na.string=c("NA",""," ")
 
 ## Assign names for ifs and ifs data frames; annual, monthly, and quarterly
 ifs_dataframes   <- c('ifs_annual','ifs_monthly','ifs_quarterly')
-
 freqs            <- c('a','m','q')
-
 ifs              <- cleaner(ifs_raw, ifs_countries, ifs_indicators, break_text)
 
 ## Extract series qualitative data columns; Extract observation columns to break
@@ -32,62 +30,53 @@ ifs_obs          <- ifs[,(6:ncol(ifs))]
 
 ## Subset data frames based on frequency
 for (i in 1:length(ifs_dataframes)) {
-  assign(ifs_dataframes[i],frequenter(frequency = freqs[i],
-                                      metadata_frame = ifs_meta,
+  assign(ifs_dataframes[i],frequenter(frequency = freqs[i], metadata_frame = ifs_meta,
                                       observations_frame = ifs_obs))
 }
 
 ## Subset data by country and order by indicator for each frequency, melt
-## resutlant data frame to tall/skinny format
+## resutlant data frame to tall/skinny format and write to output file.
 for (i in 1:length(freqs)) {
   for (j in 1:length(ifs_fred_nat)) {
-
+    # Identify country to work with for iteration
     country_name <- paste(keys(ifs_fred_nat)[j],freqs[i],sep="")
 
-    # Working frame is a frequency subset
+    # Subset by frequency
     frame        <- eval(parse(text=ifs_dataframes[i]))
 
+    # Subset by country
     assign(country_name,frame[frame$Country.Name == ifs_countries[j],])
 
     for(k in 1:length(ifs_fred_ind)) {
-      if(grepl('PT',keys(ifs_fred_ind)[k])) {
-        unit <- '163'
-      } else if(grepl('PA',keys(ifs_fred_ind)[k])) {
-        unit <- '193'
-      } else if(grepl('XDC',keys(ifs_fred_ind)[k])) {
-        unit <- '189'
-      } else if(grepl('XDR',keys(ifs_fred_ind)[k])) {
-        unit <- '194'
-      } else if(grepl('USD',keys(ifs_fred_ind)[k])) {
-        unit <- '052'
-      }
+      # Extract components to build FRED series id
+      source_id  <- keys(ifs_fred_ind)[k]
+      unit       <- unit_assigner(source_id)
+      seasonality <- season_assigner(source_id)
 
-      if(grepl('_SA_',keys(ifs_fred_ind)[k])) {
-        seasonality <- 'S'
-      } else if (!grepl('_S_',keys(ifs_fred_ind)[k])) {
-        seasonality <- 'N'
-      }
-
-      indicator  <- paste(values(ifs_fred_ind,USE.NAMES=FALSE)[k],country_name,unit,
+      # Combine source_id, unit, and seasonality into FRED series id.
+      series  <- paste(values(ifs_fred_ind,USE.NAMES=FALSE)[k],country_name,unit,
                           seasonality,sep="")
 
-      # Working frame is a country subset
+      # Get frame that has been subsetted by country
       frame      <- get(country_name)
 
-      assign(indicator,frame[frame$Indicator.Code == keys(ifs_fred_ind)[k],])
+      # Subset into discrete time series
+      assign(series,frame[frame$Indicator.Code == keys(ifs_fred_ind)[k],])
 
-      # Working frame is a indicator subset
-      frame      <- get(indicator)
+      # Get subsetted time series
+      frame      <- get(series)
 
+      # Check if data frame is populated with data
       if(is.data.frame(frame) & nrow(frame)>0) {
-        assign(indicator,
+        # Create tall/skinny time series data frame
+        assign(series,
                suppressWarnings(melt(frame, id.vars=c(colnames(frame[,(1:5)])),
                                      na.rm=T,variable.name = 'date',
-                                     value.name = indicator)))
+                                     value.name = series)))
 
-        write.table(get(indicator)[,6:7],file=paste('output',indicator,sep='\\'),
+        # Write output file
+        write.table(get(series)[,6:7],file=paste('output',series,sep='\\'),
                     quote=F,row.names=F)
-
       } else {
         # remove(get(indicator))
       }
